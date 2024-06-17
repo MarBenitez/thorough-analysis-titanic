@@ -368,7 +368,7 @@ elif option == 'Data Cleaning and Preparation':
 elif option == 'Feature Engineering':
     st.markdown('<div class="header">Feature Engineering</div>', unsafe_allow_html=True)
 
-    tab1, tab2, tab3, tab4, tab5, tab6= st.tabs(['Deck', 'Title', 'FamilySize', 'IsAlone', 'Person', 'Web Scraping'])
+    tab1, tab2, tab3, tab4, tab5= st.tabs(['Deck', 'Title', 'FamilySize', 'IsAlone', 'Person'])
 
     with tab1:
         st.markdown('<div class="subheader">Creating Deck Variable</div>', unsafe_allow_html=True)
@@ -432,25 +432,6 @@ elif option == 'Feature Engineering':
         fig.update_layout(margin = dict(t=50, l=25, r=25, b=25))
         st.plotly_chart(fig)
         
-    with tab6:
-        st.markdown('<div class="subheader">Web Scraping</div>', unsafe_allow_html=True)
-        URL = 'https://en.wikipedia.org/wiki/Sinking_of_the_Titanic'
-        web_text =  requests.get(URL).text
-        soap = BeautifulSoup(web_text, 'lxml')
-        table = soap.find_all('table', class_= 'wikitable plainrowheaders sortable')
-        df_table = pd.read_html(str(table))[0]
-        st.write(df_table.head())
-        st.write('Total passenger number onboard:', df_table['Number  onboard'][df_table['Passengers']=='Total'].values[0])
-        df_crew = df_table[df_table['Category'] == 'Crew'].reset_index(drop=True)
-        st.write(df_crew)
-        fig = px.bar(df_crew, x='Category', y='Number  onboard', color='Number  onboard', color_continuous_scale='RdBu')
-        st.plotly_chart(fig)
-        fig = px.bar(df_crew, x='Passengers', y='Percentage  saved', color='Number  saved', color_continuous_scale='RdBu')
-        st.plotly_chart(fig)
-        fig = px.bar(df_crew, x='Passengers', y='Percentage saved  by total onboard', color='Number  saved', color_continuous_scale='RdBu')
-        st.plotly_chart(fig)
-
-
 
 
 # st.sidebar.header("Original Data")
