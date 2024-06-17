@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 from scipy.stats import zscore
+import requests
+from bs4 import BeautifulSoup
 
 
 # Function to load data
@@ -366,7 +368,7 @@ elif option == 'Data Cleaning and Preparation':
 elif option == 'Feature Engineering':
     st.markdown('<div class="header">Feature Engineering</div>', unsafe_allow_html=True)
 
-    tab1, tab2, tab3, tab4= st.tabs(['Deck', 'Title', 'FamilySize', 'IsAlone'])
+    tab1, tab2, tab3, tab4, tab5, tab6= st.tabs(['Deck', 'Title', 'FamilySize', 'IsAlone', 'Person', 'Web Scraping'])
 
     with tab1:
         st.markdown('<div class="subheader">Creating Deck Variable</div>', unsafe_allow_html=True)
@@ -412,6 +414,42 @@ elif option == 'Feature Engineering':
         fig.for_each_trace(lambda trace: trace.update(name = 'Survived' if trace.name == '1' else 'Not Survived'))
         fig.update_xaxes(tickvals=[0, 1], ticktext=['Not Alone', 'Alone'])
         st.plotly_chart(fig)
+        
+    with tab5:
+        st.markdown('<div class="subheader">Creating Person Variable</div>', unsafe_allow_html=True)
+        def man_woman_child(passenger):
+            age=passenger['Age']
+            sex=passenger['Sex']
+            return 'child' if age < 16 else sex
+        df_copy['Person'] = df_copy.apply(man_woman_child,axis=1)
+        colT1,colT2 = st.columns([34,66])
+        with colT2:
+            st.write(df_copy[['Sex', 'Person']].head())
+        fig = px.histogram(df_copy, x='Person', color='Survived', histnorm='percent', color_discrete_sequence=['lightgreen', 'pink'])
+        fig.for_each_trace(lambda trace: trace.update(name = 'Survived' if trace.name == '1' else 'Not Survived'))
+        st.plotly_chart(fig)
+        fig = px.treemap(df_copy, path=[px.Constant('Titanic passengers'), 'Pclass', 'Person'], color='Survived', color_continuous_scale='RdBu')
+        fig.update_layout(margin = dict(t=50, l=25, r=25, b=25))
+        st.plotly_chart(fig)
+        
+    with tab6:
+        st.markdown('<div class="subheader">Web Scraping</div>', unsafe_allow_html=True)
+        URL = 'https://en.wikipedia.org/wiki/Sinking_of_the_Titanic'
+        web_text =  requests.get(URL).text
+        soap = BeautifulSoup(web_text, 'lxml')
+        table = soap.find_all('table', class_= 'wikitable plainrowheaders sortable')
+        df_table = pd.read_html(str(table))[0]
+        st.write(df_table.head())
+        st.write('Total passenger number onboard:', df_table['Number  onboard'][df_table['Passengers']=='Total'].values[0])
+        df_crew = df_table[df_table['Category'] == 'Crew'].reset_index(drop=True)
+        st.write(df_crew)
+        fig = px.bar(df_crew, x='Category', y='Number  onboard', color='Number  onboard', color_continuous_scale='RdBu')
+        st.plotly_chart(fig)
+        fig = px.bar(df_crew, x='Passengers', y='Percentage  saved', color='Number  saved', color_continuous_scale='RdBu')
+        st.plotly_chart(fig)
+        fig = px.bar(df_crew, x='Passengers', y='Percentage saved  by total onboard', color='Number  saved', color_continuous_scale='RdBu')
+        st.plotly_chart(fig)
+
 
 
 
