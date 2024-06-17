@@ -11,7 +11,7 @@ This project explores the famous Titanic disaster dataset using Streamlit and Ju
 - [titanic_eda.ipynb](https://github.com/MarBenitez/thorough-analysis-titanic/blob/main/titanic_eda.ipynb): Jupyter Notebook for initial data exploration and analysis.
 - [titanic.csv](https://github.com/MarBenitez/thorough-analysis-titanic/blob/main/titanic.csv): Contains the Titanic dataset (CSV format).
 
-  This __Streamlit__ application provides a user-friendly interface for analyzing the Titanic data. Key functionalities include:
+  This [__Streamlit__](https://thorough-analysis-titanic-eda.streamlit.app/) application provides a user-friendly interface for analyzing the Titanic data. Key functionalities include:
   
   * Data loading and visualization.
   * Exploratory Data Analysis (EDA).
