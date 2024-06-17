@@ -5,3 +5,4 @@ seaborn==0.13.2
 plotly==5.22.0
 scipy==1.13.1
 requests==2.32.2
+beautifulsoup4==4.12.3
